@@ -1,4 +1,5 @@
-# Smart Expense Manager ##[Live URL](https://smart-expense-manager.vercel.app/)
+# Smart Expense Manager 
+[Live URL](https://smart-expense-manager.vercel.app/)
 
 A modern, responsive expense tracking application built with HTML, CSS, and JavaScript that helps you manage your finances effectively.
 
