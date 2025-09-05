@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Expense Manager</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-wallet" aria-hidden="true"></i>
+                    <h1>Smart Expense Manager</h1>
+                </div>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode">
+                    <i class="fas fa-moon" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="dashboard">
+            <div class="card balance">
+                <p class="card-title">Total Balance</p>
+                <p class="card-value" id="totalBalance">₹0.00</p>
+            </div>
+            <div class="card income">
+                <p class="card-title">Total Income</p>
+                <p class="card-value" id="totalIncome">₹0.00</p>
+            </div>
+            <div class="card expenses">
+                <p class="card-title">Total Expenses</p>
+                <p class="card-value" id="totalExpenses">₹0.00</p>
+            </div>
+        </section>
+
+        <section class="chart-container">
+            <h3 class="chart-title">Expense Breakdown by Category</h3>
+            <div class="chart-inner">
+                <div class="chart-loading" id="chartLoading">
+                    <div class="spinner"></div>
+                    <p>Loading chart data...</p>
+                </div>
+                <canvas id="expenseChart" aria-label="Expense breakdown by category" role="img"></canvas>
+            </div>
+        </section>
+
+        <section class="form-section" id="formSection">
+            <h2 class="section-title">Add New Transaction</h2>
+            <form id="expenseForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <input type="text" id="description" placeholder="e.g., Groceries from Big Bazaar" required 
+                               maxlength="100" aria-describedby="descriptionHelp">
+                        <small id="descriptionHelp" class="help-text">Max 100 characters</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Amount (₹)</label>
+                        <input type="number" id="amount" placeholder="e.g., 500" required min="0" step="0.01" 
+                               max="9999999" aria-describedby="amountHelp">
+                        <small id="amountHelp" class="help-text">Max ₹99,99,999</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select id="category" required aria-describedby="categoryHelp">
+                            <option value="">Select a category</option>
+                            <option value="Food">Food & Groceries</option>
+                            <option value="Travel">Travel & Transport</option>
+                            <option value="Bills">Bills & Utilities</option>
+                            <option value="Shopping">Shopping</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Healthcare">Healthcare</option>
+                            <option value="Education">Education</option>
+                            <option value="Income">Income</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <small id="categoryHelp" class="help-text">Select transaction category</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="date">Date</label>
+                        <input type="date" id="date" required aria-describedby="dateHelp">
+                        <small id="dateHelp" class="help-text">Select transaction date</small>
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-plus" aria-hidden="true"></i> Add Transaction
+                </button>
+            </form>
+        </section>
+
+        <section class="transactions" aria-labelledby="transactionsHeading">
+            <h2 class="section-title" id="transactionsHeading">Transaction History</h2>
+            
+            <div class="reset-filters-container">
+                <button class="btn-secondary" id="resetFilters">
+                    <i class="fas fa-sync-alt" aria-hidden="true"></i> Reset Filters
+                </button>
+            </div>
+            
+            <div class="filters">
+                <div class="form-group">
+                    <label for="filterCategory">Filter by Category</label>
+                    <select id="filterCategory">
+                        <option value="">All Categories</option>
+                        <option value="Food">Food & Groceries</option>
+                        <option value="Travel">Travel & Transport</option>
+                        <option value="Bills">Bills & Utilities</option>
+                        <option value="Shopping">Shopping</option>
+                        <option value="Entertainment">Entertainment</option>
+                        <option value="Healthcare">Healthcare</option>
+                        <option value="Education">Education</option>
+                        <option value="Income">Income</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="filterDateFrom">From Date</label>
+                    <input type="date" id="filterDateFrom">
+                </div>
+                <div class="form-group">
+                    <label for="filterDateTo">To Date</label>
+                    <input type="date" id="filterDateTo">
+                </div>
+                <div class="form-group filter-button-container">
+                    <button class="btn-primary" id="applyFilters">
+                        <i class="fas fa-filter" aria-hidden="true"></i> Apply Filters
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table id="transactionsTable">
+                    <thead>
+                        <tr>
+                            <th scope="col">Date</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Amount</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Transactions will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="empty-state" id="emptyState">
+                <i class="fas fa-receipt" aria-hidden="true"></i>
+                <p>No transactions found. Add your first transaction!</p>
+            </div>
+        </section>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
